@@ -1,0 +1,15 @@
+package com.mirae.store.domain.common.exception.ntsBusiness;
+
+import com.mirae.global.errorcode.ErrorCode;
+
+public class TooLargeRequestException extends OpenApiException {
+
+    public TooLargeRequestException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+
+    public TooLargeRequestException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
+    }
+
+}
