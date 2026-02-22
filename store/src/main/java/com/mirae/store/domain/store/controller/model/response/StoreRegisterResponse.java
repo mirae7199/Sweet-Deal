@@ -1,0 +1,41 @@
+package com.mirae.store.domain.store.controller.model.response;
+
+import com.mirae.store.domain.store.repository.Address;
+import com.mirae.store.domain.store.repository.enums.OperatingStatus;
+import com.mirae.store.domain.store.repository.enums.StoreCategory;
+import com.mirae.store.domain.store.repository.enums.StoreStatus;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class StoreRegisterResponse {
+
+  private Long id;
+
+  private String name;
+
+  private Address address;
+
+  private String phone;
+
+  private String businessNumber;
+
+  private StoreCategory category;
+
+  private StoreStatus storeStatus;
+
+  private LocalDateTime registeredAt;
+
+  private LocalTime openingTime;
+
+  private LocalTime closingTime;
+
+  private OperatingStatus operatingStatus;
+}

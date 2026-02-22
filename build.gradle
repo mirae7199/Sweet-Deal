@@ -10,7 +10,7 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url = uri("https://repo.spring.io/release") } // 네트워크/미러 이슈 대비
+        maven { url = uri("https://repo.spring.io/release") }
     }
 }
 
@@ -19,7 +19,6 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
-    // ★ Spring Cloud BOM (Boot 3.3.x 매칭: 2023.0.x)
     dependencyManagement {
         imports {
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.6")
@@ -38,7 +37,6 @@ subprojects {
     }
 
     dependencies {
-        // 각 모듈 공통 test/lombok
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'

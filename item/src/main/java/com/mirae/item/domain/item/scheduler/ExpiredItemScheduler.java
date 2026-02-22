@@ -1,0 +1,24 @@
+package com.mirae.item.domain.item.scheduler;
+
+import com.mirae.item.domain.item.business.ItemBusiness;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class ExpiredItemScheduler {
+
+  private final ItemBusiness itemBusiness;
+
+  @Scheduled(cron = "0 0 0 * * *")
+  public void deleteItem30Day() {
+    itemBusiness.deleteExpiredSoldItems();
+
+  }
+
+  @Scheduled(cron = "0 0 * * * *") // 200
+  public void deleteItemExpiredAtOver() {
+    itemBusiness.deleteExpiredAtOver();
+  }
+}
