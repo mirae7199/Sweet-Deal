@@ -63,13 +63,13 @@ public class StoreService {
 
   public void publishRegisterImage(RegisterImageRequest req) {
     kafkaTemplate
-        .send(REGISTER_TOPIC, req.getStoreId().toString(), req)
+        .send(REGISTER_TOPIC, req.storeId().toString(), req)
         .whenComplete((result, ex) -> {
           if(ex != null) {
             log.error("Kafka 발행 실패 (cancel): {}", ex.getMessage(), ex);
           } else {
             log.info("Message sent successfully: {}, topic: {}, partition: {}",
-                req.getItemId(),
+                req.itemId(),
                 result.getRecordMetadata().topic(),
                 result.getRecordMetadata().partition());
           }
@@ -79,13 +79,13 @@ public class StoreService {
 
   public void publishUpdateImage(UpdateImageRequest req) {
     kafkaTemplate
-        .send(REGISTER_TOPIC, req.getStoreId().toString(), req)
+        .send(REGISTER_TOPIC, req.storeId().toString(), req)
         .whenComplete((result, ex) -> {
           if(ex != null) {
             log.error("Kafka 발행 실패 (cancel): {}", ex.getMessage(), ex);
           } else {
             log.info("Message sent successfully: {}, topic: {}, partition: {}",
-                req.getItemId(),
+                req.itemId(),
                 result.getRecordMetadata().topic(),
                 result.getRecordMetadata().partition());
           }
