@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 
 @JsonInclude(Include.NON_NULL)
 @Getter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Business {
 
