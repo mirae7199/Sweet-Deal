@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Store {
+public class Store{
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "store_id", nullable = false)
@@ -32,8 +32,8 @@ public class Store {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false)
   @Embedded
+  @Column(nullable = false)
   private Address address;
 
   @Column(nullable = false)
@@ -77,31 +77,6 @@ public class Store {
     this.storeStatus = StoreStatus.UNREGISTERED;
   }
 
-  public void updateName(String name) {
-    this.name = name;
-  }
-
-  public void updateAddress(Address address) {
-    this.address = address;
-  }
-
-  public void updatePhone(String phone) {
-    this.phone = phone;
-  }
-
-  public void updateBusinessNumber(String businessNumber) {
-    this.businessNumber = businessNumber;
-  }
-
-  public void updateCategory(StoreCategory category) {
-    this.category = category;
-  }
-
-  public void updateOperatingTime(LocalTime openingTime, LocalTime closingTime) {
-    this.operatingTime.setOpeningTime(openingTime);
-    this.operatingTime.setClosingTime(closingTime);
-  }
-
   public boolean isOperating() {
     if (operatingStatus == OperatingStatus.DAY_OFF) {
       return false;
@@ -122,5 +97,21 @@ public class Store {
     return !now.isBefore(open) || !now.isAfter(close);
   }
 
+  public void update(
+      String name,
+      Address address,
+      String phone,
+      StoreCategory category,
+      LocalTime openingTime,
+      LocalTime closingTime
+  ) {
+    this.name = name;
+    this.address = address;
+    this.phone = phone;
+    this.category = category;
+    this.operatingTime.setOpeningTime(openingTime);
+    this.operatingTime.setClosingTime(closingTime);
+
+  }
 }
 
