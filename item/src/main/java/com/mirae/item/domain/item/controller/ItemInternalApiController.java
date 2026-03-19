@@ -1,10 +1,10 @@
-package com.example.item.domain.item.controller;
+package com.mirae.item.domain.item.controller;
 
-import com.example.global.api.Api;
-import com.example.item.domain.item.business.ItemBusiness;
-import com.example.item.domain.item.controller.model.request.ItemInternalRequest;
-import com.example.item.domain.item.controller.model.response.ItemInternalResponse;
+import com.mirae.item.domain.item.business.ItemBusiness;
+import com.mirae.item.domain.item.controller.model.request.ItemInternalRequest;
+import com.mirae.item.domain.item.controller.model.response.ItemInternalResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +18,9 @@ public class ItemInternalApiController {
   private final ItemBusiness itemBusiness;
 
   @PostMapping("/item")
-  public Api<ItemInternalResponse> getItem(@RequestBody ItemInternalRequest itemInternalRequest) {
+  public ResponseEntity<ItemInternalResponse> getItem(@RequestBody ItemInternalRequest itemInternalRequest) {
     ItemInternalResponse itemInternalResponse = itemBusiness.getItemInternal(itemInternalRequest);
-    return Api.ok(itemInternalResponse);
+    return ResponseEntity.ok(itemInternalResponse);
   }
 
 
