@@ -1,16 +1,14 @@
-package com.example.item.domain.item.service;
+package com.mirae.item.domain.item.service;
 
-import com.example.global.errorcode.ItemErrorCode;
-import com.example.item.domain.common.exception.item.ItemAlreadyExistsException;
-import com.example.item.domain.common.exception.item.ItemCannotDeleteException;
-import com.example.item.domain.common.exception.item.ItemNotFoundException;
-import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
-import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
-import com.example.item.domain.item.controller.model.request.RegisterImageRequest;
-import com.example.item.domain.item.controller.model.request.UpdateImageRequest;
-import com.example.item.domain.item.repository.Item;
-import com.example.item.domain.item.repository.ItemRepository;
-import com.example.item.domain.item.repository.enums.ItemStatus;
+import com.mirae.global.errorcode.ItemErrorCode;
+import com.mirae.global.exception.BusinessException;
+import com.mirae.item.domain.item.controller.model.request.ItemUpdateRequest;
+import com.mirae.item.domain.item.controller.model.request.MessageUpdateRequest;
+import com.mirae.item.domain.item.controller.model.request.RegisterImageRequest;
+import com.mirae.item.domain.item.controller.model.request.UpdateImageRequest;
+import com.mirae.item.domain.item.entity.Item;
+import com.mirae.item.domain.item.repository.ItemRepository;
+import com.mirae.item.domain.item.entity.enums.ItemStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +33,10 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    public void saveAll(List<Item> items) {
+        itemRepository.saveAll(items);
+    }
+
     /*
     상품을 등록
      */
@@ -48,16 +50,15 @@ public class ItemService {
      */
     public void validateRegister(Item item) {
         if(item.getStatus() == ItemStatus.SALE) {
-            throw new ItemAlreadyExistsException(ItemErrorCode.ITEM_ALREADY_EXISTS); // 수정
+            throw new BusinessException(ItemErrorCode.ITEM_ALREADY_EXISTS);
         }
     }
 
     /*
     상품을 삭제
      */
-    public void unregister(Item item, Long quantity) {
-        long remainingQty = item.getQuantity() - quantity;
-        item.unregister(quantity);
+    public void unregister(Item item) {
+        item.unregister();
         itemRepository.save(item);
     }
 
@@ -66,10 +67,10 @@ public class ItemService {
      */
     public void validateDeletable(Item item) {
         if (item.getStatus() == ItemStatus.SOLD) { // 상품이 판매된 상태일 때
-            throw new ItemCannotDeleteException(ItemErrorCode.ITEM_ALREADY_SOLD);
+            throw new BusinessException(ItemErrorCode.ITEM_ALREADY_SOLD);
         }
         if (item.getStatus() == ItemStatus.DELETED){ // 상품이 이미 삭제된 상태일 때
-            throw new ItemCannotDeleteException(ItemErrorCode.ITEM_ALREADY_DELETED);
+            throw new BusinessException(ItemErrorCode.ITEM_ALREADY_DELETED);
         }
 
     }
@@ -119,10 +120,10 @@ public class ItemService {
 
         // 상품이 존재하는지 검증
         Boolean existsByItem = itemRepository.existsByStoreIdAndNameAndExpiredAtAndStatusIn(storeId,
-            name, expiredAt, List.of(ItemStatus.SALE, ItemStatus.RESERVED));
+            name, expiredAt, itemStatuses);
 
         if(existsByItem) {
-            throw new ItemAlreadyExistsException(ItemErrorCode.ITEM_ALREADY_EXISTS);
+            throw new BusinessException(ItemErrorCode.ITEM_ALREADY_EXISTS);
         }
 
     }
@@ -134,7 +135,7 @@ public class ItemService {
             List.of(ItemStatus.SALE, ItemStatus.RESERVED));
 
         if(!existByItem) {
-            throw new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND);
+            throw new BusinessException(ItemErrorCode.ITEM_NOT_FOUND);
         }
     }
 
@@ -142,20 +143,20 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Item getItemByIdAndStatus(Long itemId, ItemStatus status) {
         return itemRepository.findByIdAndStatus(itemId, status).
-            orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
+            orElseThrow(() -> new BusinessException(ItemErrorCode.ITEM_NOT_FOUND));
     }
 
     // id와 statusList로 아이템 조회
     @Transactional(readOnly = true)
     public Item getItemByIdAndStatusList(Long itemId, List<ItemStatus> statuses) {
         return itemRepository.findByIdAndStatusIn(itemId, statuses).
-            orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
+            orElseThrow(() -> new BusinessException(ItemErrorCode.ITEM_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public Item getItemById(Long itemId) {
         return itemRepository.findById(itemId).
-            orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
+            orElseThrow(() -> new BusinessException(ItemErrorCode.ITEM_NOT_FOUND));
 
     }
 
@@ -166,32 +167,33 @@ public class ItemService {
         // 상품 리스트가 완전히 비어있을 때, 예외 발생
         List<Item> itemList = itemRepository.findByStoreIdInAndStatusOrderByIdDesc(storesId, status);
         if(itemList.isEmpty()) {
-            throw new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND);
+            throw new BusinessException(ItemErrorCode.ITEM_NOT_FOUND);
         }
         return itemList;
     }
 
-    public void update(ItemUpdateRequest request, Item targetItem) {
-        targetItem.rename(request.getName());
-        targetItem.updateExpiredAt(request.getExpiredAt());
-        targetItem.updatePrice(request.getPrice());
-        targetItem.updateQuantity(request.getQuantity());
+    public void update(Item targetItem, ItemUpdateRequest request) {
+        targetItem.rename(request.name());
+        targetItem.changeStatus(request.status());
+        targetItem.updatePrice(request.discountPrice());
+        targetItem.updateExpiredAt(request.expiredAt());
+        targetItem.updateQuantity(request.quantity());
         itemRepository.save(targetItem);
     }
 
     public Item getItemByIdAndStatusNot(Long itemId) {
         return itemRepository.findFirstByIdAndStatusNotOrderByIdDesc(itemId, ItemStatus.DELETED)
-            .orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ItemErrorCode.ITEM_NOT_FOUND));
     }
 
     public Item getItemByIdPessimisticLock(Long itemId) {
         return itemRepository.findByIdPessimisticLock(itemId)
-            .orElseThrow(() -> new IllegalArgumentException("ITEM_NOT_FOUND"));
+            .orElseThrow(() -> new BusinessException(ItemErrorCode.ITEM_NOT_FOUND));
     }
 
-    public Item getItemByNameAndQuantityAndStatus(String name, Long quantity) {
-        return itemRepository.findByNameAndQuantityAndStatus(name, quantity, ItemStatus.SOLD)
-            .orElseThrow(() -> new IllegalArgumentException("ITEM_NOT_FOUND"));
+    public Item getItemByNameAndQuantityAndStatusAndOrderId(String name, Integer quantity, Long orderId) {
+        return itemRepository.findByNameAndQuantityAndStatusAndOrderId(name, quantity, ItemStatus.SOLD, orderId)
+            .orElseThrow(() -> new BusinessException(ItemErrorCode.ITEM_NOT_FOUND));
     }
 
     public void delete(Item item) {
@@ -200,13 +202,13 @@ public class ItemService {
 
     public void publishCancelOrder(MessageUpdateRequest req) {
         kafkaTemplate
-            .send(CANCEL_TOPIC, req.getOrderId().toString(), req)
+            .send(CANCEL_TOPIC, req.orderId().toString(), req)
             .whenComplete(((result, ex) -> {
                 if (ex != null) {
                     log.error("Kafka 발행 실패 (cancel): {}", ex.getMessage(), ex);
                 } else {
                     log.info("Message sent successfully: {}, topic: {}, partition: {}",
-                        req.getOrderId(),
+                        req.orderId(),
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition());
                 }
@@ -215,13 +217,13 @@ public class ItemService {
 
     public void publishRegisterImage(RegisterImageRequest req) {
         kafkaTemplate
-            .send(REGISTER_TOPIC, req.getItemId().toString(), req)
+            .send(REGISTER_TOPIC, req.itemId().toString(), req)
             .whenComplete(((result, ex) -> {
                 if(ex != null) {
                     log.error("Kafka 발행 실패 (register): {}", ex.getMessage(), ex);
                 } else {
                     log.info("Message sent successfully: {} topic: {}, partition: {}",
-                        req.getItemId(),
+                        req.itemId(),
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition());
                 }
@@ -230,13 +232,13 @@ public class ItemService {
 
     public void publishUpdateImage(UpdateImageRequest req) {
         kafkaTemplate
-            .send(UPDATE_TOPIC, req.getItemId().toString(), req)
+            .send(UPDATE_TOPIC, req.itemId().toString(), req)
             .whenComplete((result, ex) -> {
                 if (ex != null) {
                     log.error("Kafka 발행 실패 (update): {}", ex.getMessage(), ex);
                 } else {
                     log.info("Message sent successfully: {} topic: {}, partition: {}",
-                        req.getItemId(),
+                        req.itemId(),
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition());
                 }

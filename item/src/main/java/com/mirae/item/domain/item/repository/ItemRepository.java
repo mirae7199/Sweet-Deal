@@ -1,6 +1,7 @@
-package com.example.item.domain.item.repository;
+package com.mirae.item.domain.item.repository;
 
-import com.example.item.domain.item.repository.enums.ItemStatus;
+import com.mirae.item.domain.item.entity.Item;
+import com.mirae.item.domain.item.entity.enums.ItemStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -35,7 +36,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Optional<Item> findFirstByIdAndStatusNotOrderByIdDesc(Long id, ItemStatus status);
 
-    Optional<Item> findByNameAndQuantityAndStatus(String name, Long quantity, ItemStatus status);
+    Optional<Item> findByNameAndQuantityAndStatusAndOrderId(String name, Integer quantity, ItemStatus status, Long orderId);
 
     // 비관적 락 모드 (해당 레코드를 다른 트랜잭션에서 읽거나 수정할 때까지 차단)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
