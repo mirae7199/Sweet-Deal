@@ -4,7 +4,7 @@ plugins {
 	id 'io.spring.dependency-management'
 }
 
-group = 'com.example'
+group = 'com.mirae'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -58,7 +58,6 @@ dependencies {
 
 dependencyManagement {
 	imports {
-		// ✅ Boot 3.3.x와 호환되는 Spring Cloud 2023.0.x (Leyton)
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.6"
 	}
 }
