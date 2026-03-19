@@ -1,13 +1,8 @@
-package com.example.item.domain.item.repository;
+package com.mirae.item.domain.item.entity;
 
-import com.example.global.errorcode.ItemErrorCode;
-import com.example.item.domain.common.exception.item.InsufficientItemQuantityException;
-import com.example.item.domain.common.exception.item.InvalidExpiredAtException;
-import com.example.item.domain.common.exception.item.InvalidItemNameException;
-import com.example.item.domain.common.exception.item.InvalidItemPriceException;
-import com.example.item.domain.common.exception.item.InvalidItemStatusChangeException;
-import com.example.item.domain.common.exception.item.InvalidQuantityException;
-import com.example.item.domain.item.repository.enums.ItemStatus;
+import com.mirae.global.errorcode.ItemErrorCode;
+import com.mirae.global.exception.BusinessException;
+import com.mirae.item.domain.item.entity.enums.ItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,7 +23,7 @@ public class Item {
     private String name;
 
     @Column(nullable = false)
-    private Long quantity;
+    private Integer quantity;
 
     @Column(nullable = false, name="expired_at")
     private LocalDateTime expiredAt;
@@ -42,8 +37,11 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
 
+    @Column(name = "original_price", nullable = false)
+    private Integer originalPrice;
+
     @Column(nullable = false)
-    private Long price;
+    private Integer discountPrice;
 
     @Column(name="store_id")
     private Long storeId;
@@ -56,9 +54,9 @@ public class Item {
         this.registeredAt = LocalDateTime.now();
     }
 
-    public void unregister(Long quantity) {
+    public void unregister() {
         this.status = ItemStatus.DELETED;
-        this.quantity = quantity;
+        this.quantity = 0;
         this.unregisteredAt = LocalDateTime.now();
 
     }
@@ -66,16 +64,16 @@ public class Item {
     public void changeStatus(ItemStatus status) {
         this.status = status;
     }
-    public void updateQuantity(Long quantity) {
+    public void updateQuantity(Integer quantity) {
         if(quantity <= 0) {
-            throw new InvalidQuantityException(ItemErrorCode.INVALID_ITEM_QUANTITY);
+            throw new BusinessException(ItemErrorCode.INVALID_ITEM_QUANTITY);
         }
         this.quantity = quantity;
     }
 
     public void rename(String name) {
         if(name == null || name.isEmpty()) {
-            throw new InvalidItemNameException(ItemErrorCode.INVALID_ITEM_NAME);
+            throw new BusinessException(ItemErrorCode.INVALID_ITEM_NAME);
         }
 
         this.name = name;
@@ -85,40 +83,32 @@ public class Item {
         LocalDateTime present = LocalDateTime.now();
 
         if(expiredAt.isBefore(present)) {
-            throw new InvalidExpiredAtException(ItemErrorCode.INVALID_ITEM_EXPIRED_DATE);
+            throw new BusinessException(ItemErrorCode.INVALID_ITEM_EXPIRED_DATE);
         }
 
         this.expiredAt = expiredAt;
     }
 
-    public void updatePrice(Long price) {
+    public void updatePrice(Integer price) {
         if(price < 0) {
-            throw new InvalidItemPriceException(ItemErrorCode.INVALID_ITEM_PRICE);
+            throw new BusinessException(ItemErrorCode.INVALID_ITEM_PRICE);
         }
 
-        this.price = price;
+        this.discountPrice = price;
     }
 
-    public void updateStatus(ItemStatus status) {
-        if(status == ItemStatus.DELETED || status == ItemStatus.SOLD) {
-            throw new InvalidItemStatusChangeException(ItemErrorCode.INVALID_ITEM_STATUS_CHANGE);
-        }
-
-        this.status = status;
-    }
-
-    public Long remainingQuantity(Long quantity) {
+    public Integer remainingQuantity(Integer quantity) {
         if(this.quantity < quantity) {
-            throw new InsufficientItemQuantityException(ItemErrorCode.INSUFFICIENT_ITEM_QUANTITY);
+            throw new BusinessException(ItemErrorCode.INSUFFICIENT_ITEM_QUANTITY);
         }
         return this.quantity - quantity;
     }
 
-    public void decreaseStock(Long quantity) {
+    public void decreaseStock(Integer quantity) {
        this.quantity -= quantity;
     }
 
-    public void cancelStock(Long quantity) {
+    public void cancelStock(Integer quantity) {
         this.quantity += quantity;
     }
 
@@ -126,4 +116,7 @@ public class Item {
         this.orderId = orderId;
     }
 
+    public void insertOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
 }
