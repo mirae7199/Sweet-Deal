@@ -1,6 +1,6 @@
-package com.example.item;
+package com.mirae.item;
 
-import com.example.item.domain.item.service.StoreFeignClient;
+import com.mirae.item.domain.item.service.StoreFeignClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
