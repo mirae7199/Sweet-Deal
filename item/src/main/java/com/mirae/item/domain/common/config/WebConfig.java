@@ -1,7 +1,7 @@
-package com.example.item.domain.common.config;
+package com.mirae.item.domain.common.config;
 
-import com.example.global.interceptor.AuthorizationInterceptor;
-import com.example.global.resolver.UserSessionResolver;
+import com.mirae.global.interceptor.AuthorizationInterceptor;
+import com.mirae.global.resolver.UserSessionResolver;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

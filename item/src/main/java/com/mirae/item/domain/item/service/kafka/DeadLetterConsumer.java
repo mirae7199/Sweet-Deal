@@ -1,6 +1,6 @@
-package com.example.item.domain.item.service.kafka;
+package com.mirae.item.domain.item.service.kafka;
 
-import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
+import com.mirae.item.domain.item.controller.model.request.MessageUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -14,7 +14,7 @@ public class DeadLetterConsumer {
   groupId = "item-group-dlt")
   public void listenDLT(@Payload MessageUpdateRequest messageUpdateRequest, Exception exception) {
     log.error("Received failed order in DLT: {}, Error: {}",
-        messageUpdateRequest.getOrderId(), exception.getMessage());
+        messageUpdateRequest.orderId(), exception.getMessage());
   }
 
 }

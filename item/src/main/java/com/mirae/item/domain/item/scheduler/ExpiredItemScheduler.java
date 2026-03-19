@@ -1,6 +1,6 @@
-package com.example.item.domain.item.scheduler;
+package com.mirae.item.domain.item.scheduler;
 
-import com.example.item.domain.item.business.ItemBusiness;
+import com.mirae.item.domain.item.business.ItemBusiness;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

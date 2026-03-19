@@ -1,4 +1,4 @@
-package com.example.item.domain.item.repository.enums;
+package com.mirae.item.domain.item.entity.enums;
 
 import lombok.RequiredArgsConstructor;
 

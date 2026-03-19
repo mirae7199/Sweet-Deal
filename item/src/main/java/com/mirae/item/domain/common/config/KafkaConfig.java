@@ -1,6 +1,5 @@
-package com.example.item.domain.common.config;
+package com.mirae.item.domain.common.config;
 
-import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -50,7 +49,7 @@ public class KafkaConfig {
 
     // 들어오는 타입 상관없이 무조건 내 DTO로 역직렬화
     props.put(JsonDeserializer.VALUE_DEFAULT_TYPE,
-        "com.example.item.domain.item.controller.model.request.MessageUpdateRequest");
+        "com.mirae.item.domain.item.controller.model.request.MessageUpdateRequest");
 
     return new DefaultKafkaConsumerFactory<>(props);
   }

@@ -1,6 +1,6 @@
-package com.example.item.domain.item.service;
+package com.mirae.item.domain.item.service;
 
-import com.example.item.domain.item.controller.model.response.StoreSimpleResponse;
+import com.mirae.item.domain.item.controller.model.response.StoreSimpleResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
