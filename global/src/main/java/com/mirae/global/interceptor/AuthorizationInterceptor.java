@@ -1,15 +1,13 @@
-package com.example.global.interceptor;
+package com.mirae.global.interceptor;
 
-import com.example.global.errorcode.UserErrorCode;
+import com.mirae.global.errorcode.UserErrorCode;
 
-import com.example.global.exception.UserNotFoundException;
+import com.mirae.global.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
@@ -40,8 +38,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         String role = request.getHeader("x-user-role");
 
         if (userId == null) {
-            throw new UserNotFoundException(UserErrorCode.USER_NOT_FOUND,
-                "x-user-id header가 존재하지 않습니다.");
+            throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
         }
 
         // request.setAttribute("userId"| "email" | "role", …)로 요청 속성에 저장

@@ -1,4 +1,4 @@
-package com.example.global.annotation;
+package com.mirae.global.annotation;
 
 
 import java.lang.annotation.ElementType;

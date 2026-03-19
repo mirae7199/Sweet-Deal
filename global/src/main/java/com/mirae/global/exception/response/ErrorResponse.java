@@ -1,6 +1,6 @@
-package com.example.global.exception.response;
+package com.mirae.global.exception.response;
 
-import com.example.global.errorcode.ErrorCode;
+import com.mirae.global.errorcode.ErrorCode;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;

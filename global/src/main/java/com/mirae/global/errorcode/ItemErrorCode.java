@@ -1,4 +1,4 @@
-package com.example.global.errorcode;
+package com.mirae.global.errorcode;
 
 
 import lombok.AllArgsConstructor;
@@ -28,11 +28,8 @@ public enum ItemErrorCode implements ErrorCode {
     INSUFFICIENT_ITEM_QUANTITY(HttpStatus.BAD_REQUEST.value(), 1113, "현재 상품 재고보다 더 삭제할 수 없습니다."),
     STORE_SERVICE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), 1114, "Store 서비스와의 통신 중 오류가 발생했습니다."),
     STORE_ID_REQUIRED(HttpStatus.BAD_REQUEST.value(), 1115, "요청에 매장 ID가 필요합니다."),
-    STORE_NOT_OWNED(HttpStatus.FORBIDDEN.value(), 1116, "해당 매장은 사용자의 소유가 아닙니다.");
-
-
-
-
+    STORE_NOT_OWNED(HttpStatus.FORBIDDEN.value(), 1116, "해당 매장은 사용자의 소유가 아닙니다."),
+    ITEM_OUT_OF_STOCK(HttpStatus.BAD_REQUEST.value(), 1117, "상품에 재고가 없습니다.");
 
     private final Integer httpCode;
     private final Integer errorCode;

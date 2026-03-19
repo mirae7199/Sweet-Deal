@@ -1,6 +1,6 @@
-package com.example.global.resolver;
+package com.mirae.global.resolver;
 
-import com.example.global.anntation.UserSession;
+import com.mirae.global.annotation.UserSession;
 
 
 import lombok.RequiredArgsConstructor;

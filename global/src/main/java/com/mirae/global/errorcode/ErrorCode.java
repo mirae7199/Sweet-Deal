@@ -1,4 +1,4 @@
-package com.example.global.errorcode;
+package com.mirae.global.errorcode;
 
 public interface ErrorCode{
     public Integer getHttpCode();

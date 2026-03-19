@@ -1,4 +1,4 @@
-package com.example.global.errorcode;
+package com.mirae.global.errorcode;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.example.global.exception;
+package com.mirae.global.exception;
 
-import com.example.global.errorcode.ErrorCode;
+import com.mirae.global.errorcode.ErrorCode;
 import lombok.Getter;
 
 @Getter

@@ -1,4 +1,4 @@
-package com.example.global.resolver;
+package com.mirae.global.resolver;
 
 
 
